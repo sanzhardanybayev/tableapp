@@ -4,3 +4,10 @@ export const choiceMade = (value) => {
         payload: value
     }
 };
+
+export const userAdded = (value) => {
+    return {
+        type: "USER_ADDED",
+        payload: value
+    }
+};

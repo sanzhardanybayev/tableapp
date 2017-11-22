@@ -1,5 +1,4 @@
-export default function () {
-    return [
+let users =  [
         {
             id: 1,
             name: "Bucky",
@@ -21,5 +20,16 @@ export default function () {
             patronymic: "Madi likes her dog but it is really annoying.",
             username: 'madi'
         }
-    ]
+];
+
+export default function(state=users, action){
+    switch(action.type){
+        case "USER_ADDED":
+            return [
+                ...state,
+                action.payload
+            ];
+            break;
+    }
+    return state;
 }

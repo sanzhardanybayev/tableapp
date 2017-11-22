@@ -5,9 +5,11 @@ import MenuItem from 'material-ui/MenuItem';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {choiceMade} from "../actions/app";
+import {userAdded} from "../actions/app";
 import Table from './Table';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component{
@@ -38,9 +40,26 @@ class App extends React.Component{
         this.setState({open: true});
     };
 
+    saveUser = () => {
+        let surname = document.querySelector("#surname").value;
+        let name = document.querySelector("#name").value;
+        let patronymic = document.querySelector("#patronymic").value;
+        let login = document.querySelector("#login").value;
+
+        let user = {
+            id: 22,
+            name: name,
+            surname: surname,
+            patronymic: patronymic,
+            username: login
+        };
+        this.setState({open: false});
+        this.props.userAdded(user);
+    };
+
     render(){
         let component = null;
-        if(this.props.choice.value == "employee"){
+        if(this.props.choice.value === "employee"){
             component = <Table/>;
         }
         return(
@@ -90,17 +109,54 @@ class App extends React.Component{
                     <div className="col-md-3">
                         {   // Отображаем кнопку только тогда, когда выбрана таблица
                             (component) ?  (
-                            <MuiThemeProvider>
-                                <RaisedButton label="Добавить сотрудника" primary={true} onClick={this.handleClick}/>
-                                <Dialog
-                                    title="Dialog With Actions"
-                                    modal={false}
-                                    open={this.state.open}
-                                    onRequestClose={this.handleClose}
-                                >
-                                    The actions in this window were passed in as an array of React objects.
-                                </Dialog>
-                            </MuiThemeProvider>
+                                <div>
+                                    <MuiThemeProvider>
+                                        <RaisedButton label="Добавить сотрудника" primary={true} onClick={this.handleClick}/>
+                                    </MuiThemeProvider>
+                                    <MuiThemeProvider>
+                                            <Dialog
+                                                title="Добавление пользователя"
+                                                modal={false}
+                                                style={{textAlign: "center"}}
+                                                open={this.state.open}
+                                                onRequestClose={this.handleClose}
+                                            >
+                                                <div className="row">
+                                                    <div className="col-md-5 offset-md-3">
+
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="surname" className={"col"} hintText="Фамилия"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="name" className={"col"} hintText="Имя"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="patronymic" className={"col"} hintText="Отчество"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="login" className={"col"} hintText="login"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+
+                                                            <div className="col-md-5 offset-3">
+                                                                <MuiThemeProvider>
+                                                                    <RaisedButton style={{marginTop: "2em"}} onClick={this.saveUser} label="Добавить"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                    </div>
+
+                                                </div>
+                                            </Dialog>
+                                        </MuiThemeProvider>
+                                </div>
+
                             ) : null}
 
                     </div>
@@ -118,7 +174,7 @@ function mapStateProps(state){
 }
 
 function matchDispatchToProps(dispatch){
-    return bindActionCreators({choiceMade: choiceMade}, dispatch);
+    return bindActionCreators({choiceMade: choiceMade, userAdded: userAdded}, dispatch);
 }
 
 export default connect(mapStateProps, matchDispatchToProps)(App);
