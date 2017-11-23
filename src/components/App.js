@@ -4,12 +4,15 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {choiceMade} from "../actions/app";
-import {userAdded} from "../actions/app";
+import {choiceMade, userAdded} from "../actions/app";
 import Table from './Table';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+import CountriesTable from './CountriesTable';
+import CitiesTable from './CitiesTable';
+
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component{
@@ -59,8 +62,17 @@ class App extends React.Component{
 
     render(){
         let component = null;
-        if(this.props.choice.value === "employee"){
-            component = <Table/>;
+
+        switch(this.props.choice.value){
+            case "employee":
+                component = <Table/>;
+                break;
+            case "countries":
+                component = <CountriesTable/>;
+                break;
+            case "cities":
+                component = <CitiesTable/>;
+                break;
         }
         return(
             <section className={"container "}>
@@ -90,6 +102,7 @@ class App extends React.Component{
                                 <MenuItem value={"cities"} primaryText="Города" />
                             </SelectField>
                         </MuiThemeProvider>
+
                         <MuiThemeProvider>
                             <SelectField
                                 floatingLabelText="Документы"
@@ -108,7 +121,7 @@ class App extends React.Component{
                     </div>
                     <div className="col-md-3">
                         {   // Отображаем кнопку только тогда, когда выбрана таблица
-                            (component) ?  (
+                            (this.props.choice.value === "employee") ?  (
                                 <div>
                                     <MuiThemeProvider>
                                         <RaisedButton label="Добавить сотрудника" primary={true} onClick={this.handleClick}/>
