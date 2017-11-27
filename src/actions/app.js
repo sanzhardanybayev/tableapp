@@ -12,3 +12,17 @@ export const userAdded = (value) => {
     }
 };
 
+export const usersLoaded = (value) => {
+    return {
+        type: "USERS_LOADED",
+        payload: value
+    }
+};
+
+export const tasksLoaded = (value) => {
+    return {
+        type: "TASKS_LOADED",
+        payload: value
+    }
+};
+

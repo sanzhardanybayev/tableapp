@@ -4,13 +4,18 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {choiceMade, userAdded} from "../actions/app";
+import axios from 'axios';
+
+import {choiceMade, userAdded, usersLoaded} from "../actions/app";
+
 import Table from './Table';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+
 import CountriesTable from './CountriesTable';
 import CitiesTable from './CitiesTable';
+import TasksContainer from './TasksContainer';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,6 +34,7 @@ class App extends React.Component{
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.saveUser= this.saveUser.bind(this);
     }
 
     handleChange(event, index, value) {
@@ -48,22 +54,51 @@ class App extends React.Component{
         let name = document.querySelector("#name").value;
         let patronymic = document.querySelector("#patronymic").value;
         let login = document.querySelector("#login").value;
+        let email = document.querySelector("#email").value;
+        let password = document.querySelector("#password").value;
+        let id_number = document.querySelector("#id_number").value;
 
         let user = {
-            id: 22,
             name: name,
             surname: surname,
             patronymic: patronymic,
-            username: login
+            email: email,
+            password: password,
+            username: login,
+            id_number: id_number
         };
-        this.setState({open: false});
-        this.props.userAdded(user);
+
+
+        let params = new URLSearchParams();
+        params.append('name', user.name);
+        params.append('surname', user.surname);
+        params.append('patronymic', user.patronymic);
+        params.append('email', user.email);
+        params.append('password', user.password);
+        params.append('username', user.username);
+        params.append('id_number', user.id_number);
+        params.append('type', 'saveUser');
+
+        let component = this;
+        axios.post('https://localhost:443', params).then(function(response){
+            component.props.userAdded({...user, id: response.data.user_id});
+            component.setState({open: false});
+        })
+        .catch(function (error) {
+            console.log(error);
+            console.log('error');
+        });
+
+
     };
 
     render(){
         let component = null;
 
         switch(this.props.choice.value){
+            case "DashBoard1":
+                component = <TasksContainer/>;
+                break;
             case "employee":
                 component = <Table/>;
                 break;
@@ -157,6 +192,24 @@ class App extends React.Component{
                                                                     <TextField id="login" className={"col"} hintText="login"/>
                                                                 </MuiThemeProvider>
                                                             </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="email" className={"col"} hintText="email"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="password" className={"col"} hintText="password"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+                                                            <div className="col-xs-12">
+                                                                <MuiThemeProvider>
+                                                                    <TextField id="id_number" className={"col"} hintText="ИИН"/>
+                                                                </MuiThemeProvider>
+                                                            </div>
+
+
+
 
                                                             <div className="col-md-5 offset-3">
                                                                 <MuiThemeProvider>
@@ -187,7 +240,7 @@ function mapStateProps(state){
 }
 
 function matchDispatchToProps(dispatch){
-    return bindActionCreators({choiceMade: choiceMade, userAdded: userAdded}, dispatch);
+    return bindActionCreators({choiceMade: choiceMade, usersLoaded: usersLoaded, userAdded: userAdded}, dispatch);
 }
 
 export default connect(mapStateProps, matchDispatchToProps)(App);
