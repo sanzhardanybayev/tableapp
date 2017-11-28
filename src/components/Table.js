@@ -9,7 +9,7 @@ class Table extends React.Component{
 
     componentWillMount(){
         let component = this;
-        axios.get('https://localhost/?type=users')
+        axios.get('http://table.topclass.kz/?type=users')
             .then(function (response) {
                 component.props.usersLoaded(response.data.users);
             })

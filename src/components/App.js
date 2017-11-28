@@ -80,7 +80,7 @@ class App extends React.Component{
         params.append('type', 'saveUser');
 
         let component = this;
-        axios.post('https://localhost:443', params).then(function(response){
+        axios.post('http://table.topclass.kz', params).then(function(response){
             component.props.userAdded({...user, id: response.data.user_id});
             component.setState({open: false});
         })

@@ -9,7 +9,7 @@ class TasksContainer extends React.Component{
 
     componentWillMount(){
         let component = this;
-        axios.get('https://localhost/?type=tasks')
+        axios.get('http://table.topclass.kz/?type=tasks')
             .then(function (response) {
                 component.props.tasksLoaded(response.data.tasks);
             })
